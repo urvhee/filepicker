@@ -6,6 +6,7 @@
         </shape>
     </item>
     <item android:state_pressed="true">
+        <!--This is where editing in xml_baru branch happen-->
         <shape android:shape="oval">
             <solid android:color="#c20586"/>
         </shape>
