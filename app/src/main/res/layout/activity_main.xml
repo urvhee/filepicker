@@ -8,6 +8,7 @@
         tools:context=".MainActivity">
 
     <!--Seedang diedit-->
+    <!--1-->
 
     <LinearLayout
             android:orientation="vertical"
