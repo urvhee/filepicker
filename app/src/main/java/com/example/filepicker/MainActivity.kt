@@ -77,6 +77,27 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun addDataToView(
+        documentPath: java.util.ArrayList<String>,
+        photoPath: java.util.ArrayList<String>,
+        videoPath: java.util.ArrayList<String>
+    ) {
+        filePath.addAll(documentPath)
+        filePath.addAll(photoPath)
+        filePath.addAll(videoPath)
+        if (recyclerview != null) {
+            val layoutManager = StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL)
+            layoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
+            recyclerview.layoutManager = layoutManager
+
+            val imageAdapter = ImageAdapter(this, filePath)
+
+            recyclerview.adapter = imageAdapter
+            recyclerview.itemAnimator = DefaultItemAnimator()
+        }
+        toast("Num of file(s) selected: ${filePath.size}")
+    }
+
     private fun hasPermission(state: Int){
         askPermission(){
             getFilePicker(state)
@@ -113,6 +134,7 @@ class MainActivity : AppCompatActivity() {
     private fun getFilePicker(state: Int){
 
         val picker = FilePickerBuilder.instance.setMaxCount(10)
+        val intent = Intent(this@MainActivity, FilePickerActivity::class.java)
 
         filePath.clear()
         documentPath.clear()
