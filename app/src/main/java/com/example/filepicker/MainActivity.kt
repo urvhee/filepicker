@@ -3,6 +3,7 @@ package com.example.filepicker
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
@@ -23,6 +24,8 @@ import droidninja.filepicker.fragments.MediaPickerFragment
 import droidninja.filepicker.fragments.PhotoPickerFragmentListener
 import droidninja.filepicker.utils.FragmentUtil
 import org.jetbrains.anko.toast
+import java.io.File
+import java.io.InputStream
 
 
 class MainActivity : AppCompatActivity() {
@@ -37,6 +40,9 @@ class MainActivity : AppCompatActivity() {
     private var videoPath: ArrayList<String> = ArrayList()
     // ---------
     private var filePath: ArrayList<String> = ArrayList()
+
+    //filepath
+    private var checksumFilePath = System.getProperty("user.dir")+"/storage/emulated/0/Download/75145_VID_20191211_091549_splitted_newsroom.mp4.part_1.mp4"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +63,11 @@ class MainActivity : AppCompatActivity() {
             hasPermission(3)
         }
 
+        btn_checksum.setOnClickListener{
+            val file = File(checksumFilePath)
+//            val md5 = MD5.calculateMD5(file)
+//            println("Computing MD5 from file: $md5")
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -66,6 +77,8 @@ class MainActivity : AppCompatActivity() {
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     photoPath.addAll(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA))
                     videoPath.addAll(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA))
+                    var uri= data.dataString
+                    Log.d("MainActivity", "Uri is $uri")
                 }
             FilePickerConst.REQUEST_CODE_DOC ->
                 if (resultCode == Activity.RESULT_OK && data != null) {
@@ -85,15 +98,15 @@ class MainActivity : AppCompatActivity() {
         filePath.addAll(documentPath)
         filePath.addAll(photoPath)
         filePath.addAll(videoPath)
-        if (recyclerview != null) {
+        if (rv != null) {
             val layoutManager = StaggeredGridLayoutManager(3, OrientationHelper.VERTICAL)
             layoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_MOVE_ITEMS_BETWEEN_SPANS
-            recyclerview.layoutManager = layoutManager
+            rv.layoutManager = layoutManager
 
             val imageAdapter = ImageAdapter(this, filePath)
 
-            recyclerview.adapter = imageAdapter
-            recyclerview.itemAnimator = DefaultItemAnimator()
+            rv.adapter = imageAdapter
+            rv.itemAnimator = DefaultItemAnimator()
         }
         toast("Num of file(s) selected: ${filePath.size}")
     }
